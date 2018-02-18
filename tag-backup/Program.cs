@@ -45,7 +45,7 @@ namespace TagBackup {
             }
 
             if (opt.Backup)
-                exitCode = BackupDirectoryTags(directoryPath: opt.DirectoryPath, jsonPath: opt.JsonPath, beautify: opt.Beautify, verbose: opt.Verbose);
+                exitCode = BackupDirectoryTags(directoryPath: opt.DirectoryPath, jsonPath: opt.JsonPath, uglify: opt.Uglify, verbose: opt.Verbose);
 
             if (opt.Cleanup)
                 exitCode = CleanupDirectoryTags(directoryPath: opt.DirectoryPath, verbose: opt.Verbose);
@@ -75,7 +75,7 @@ namespace TagBackup {
         }
 
 
-        static int BackupDirectoryTags(string directoryPath, string jsonPath, bool beautify, bool verbose) {
+        static int BackupDirectoryTags(string directoryPath, string jsonPath, bool uglify, bool verbose) {
             var exitCode     = 0;
             var tagDir       = new TagDirectory();
             var i            = 0;
@@ -101,7 +101,7 @@ namespace TagBackup {
                     Console.WriteLine("{0}: '{1}' - {2}", i, filename, JsonConvert.SerializeObject(tags));
             }
 
-            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(tagDir, beautify ? Formatting.Indented : Formatting.None));
+            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(tagDir, uglify ? Formatting.None : Formatting.Indented));
 
             Console.WriteLine("Successfully backed up {0} {1} with tags", i, i > 1 ? "files" : "file");
 

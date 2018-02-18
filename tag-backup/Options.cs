@@ -49,8 +49,8 @@ namespace TagBackup {
         }
 
 
-        [CommandLineOption(Name = "beautify", Description = "Beautify the backup JSON", GroupId = "options")]
-        public bool Beautify { get; set; }
+        [CommandLineOption(Name = "uglify", Description = "Uglify the backup JSON", GroupId = "options")]
+        public bool Uglify { get; set; }
 
 
         [CommandLineOption(Name = "v", Aliases = "verbose", Description = "Produce verbose output", GroupId = "options")]
