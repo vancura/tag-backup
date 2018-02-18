@@ -4,6 +4,7 @@ using PListNet;
 using PListNet.Nodes;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Mono.Unix.Native;
@@ -44,8 +45,10 @@ namespace TagBackup {
                 return ErrParserHasErrors;
             }
 
+            string jsonPath = opt.DirectoryPath + "/" + opt.JsonFilename;
+
             if (opt.Backup)
-                exitCode = BackupDirectoryTags(directoryPath: opt.DirectoryPath, jsonPath: opt.JsonPath, uglify: opt.Uglify, verbose: opt.Verbose);
+                exitCode = BackupDirectoryTags(directoryPath: opt.DirectoryPath, jsonPath: jsonPath, uglify: opt.Uglify, verbose: opt.Verbose);
 
             if (opt.Cleanup)
                 exitCode = CleanupDirectoryTags(directoryPath: opt.DirectoryPath, verbose: opt.Verbose);

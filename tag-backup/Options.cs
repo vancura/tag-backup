@@ -32,20 +32,20 @@ namespace TagBackup {
 
 
         string _directoryPath;
-        string _jsonPath;
+        string _jsonFilename;
 
 
-        [CommandLineOption(Name = "p", Aliases = "path", Description = "Specify the path to the directory to backup", GroupId = "options")]
+        [CommandLineOption(Name = "p", Aliases = "path", Description = "Specify the path to the directory to backup (. if not specified)", GroupId = "options")]
         public string DirectoryPath {
             get => _directoryPath ?? ".";
             set => _directoryPath = value;
         }
 
 
-        [CommandLineOption(Name = "j", Aliases = "json", Description = "Specify the path to the JSON backup", GroupId = "options")]
-        public string JsonPath {
-            get => _jsonPath ?? "tags.json";
-            set => _jsonPath = value;
+        [CommandLineOption(Name = "j", Aliases = "json", Description = "Specify the filename for the JSON backup (_tags.json if not specified)", GroupId = "options")]
+        public string JsonFilename {
+            get => _jsonFilename ?? "_tags.json";
+            set => _jsonFilename = value;
         }
 
 
