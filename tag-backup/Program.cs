@@ -160,7 +160,11 @@ namespace TagBackup {
                     continue;
 
                 // everything should be fine at this point
-                tagDir.AddFileTags(filename, tags);
+                HashSet<string> o = tagDir.AddFileTags(filename, tags);
+
+                if (Opt.Verbose)
+                    Console.WriteLine("\"{0}\" - {1}", filename, JsonConvert.SerializeObject(o));
+
                 i++;
             }
 

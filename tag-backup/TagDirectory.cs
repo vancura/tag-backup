@@ -23,7 +23,8 @@ namespace TagBackup {
         /// </summary>
         /// <param name="filename">Filename</param>
         /// <param name="tags">Tags</param>
-        public void AddFileTags(string filename, HashSet<string> tags) {
+        /// <returns>Tag structure</returns>
+        public HashSet<string> AddFileTags(string filename, HashSet<string> tags) {
             var o = new HashSet<string>();
 
             if (Program.Opt.NoColor) {
@@ -35,8 +36,7 @@ namespace TagBackup {
 
             Files.Add(new TagFile(filename, o));
 
-            if (Program.Opt.Verbose)
-                Console.WriteLine("\"{0}\" - {1}", filename, JsonConvert.SerializeObject(o));
+            return o;
         }
 
 
