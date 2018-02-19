@@ -39,15 +39,20 @@ namespace TagBackup {
         }
 
 
-        [CommandLineOption(Name = "j", Aliases = "json", Description = "Specify the filename for the JSON backup (_tags.json if not specified)", GroupId = "options")]
+        [CommandLineOption(Name = "j", Aliases = "json", Description = "Specify the filename for the JSON backup (_tags.json if not specified)",
+            GroupId             = "options")]
         public string JsonFilename {
             get => _jsonFilename ?? "_tags.json";
             set => _jsonFilename = value;
         }
 
 
-        [CommandLineOption(Name = "uglify", Description = "Uglify the backup JSON", GroupId = "options")]
+        [CommandLineOption(Name = "u", Aliases = "uglify", Description = "Uglify the backup JSON", GroupId = "options")]
         public bool Uglify { get; set; }
+
+
+        [CommandLineOption(Name = "n", Aliases = "nocol", Description = "Trim the color code from tags", GroupId = "options")]
+        public bool NoColor { get; set; }
 
 
         [CommandLineOption(Name = "v", Aliases = "verbose", Description = "Produce verbose output", GroupId = "options")]
