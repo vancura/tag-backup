@@ -3,6 +3,7 @@ using System.IO;
 using PListNet;
 using PListNet.Nodes;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Mono.Unix.Native;
 using Plossum.CommandLine;
@@ -151,7 +152,7 @@ namespace TagBackup {
             Console.WriteLine("Backing up the directory '{0}' to JSON backup '{1}'", Opt.DirectoryPath, jsonPath);
 
             foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
-                // ignore the potentially existing json backup file
+                // ignore the potentially existing JSON backup file
                 if (filename == jsonPath)
                     continue;
 
@@ -171,6 +172,8 @@ namespace TagBackup {
                 i++;
             }
 
+            // serialize backup JSON
+            // TODO: Stores full path in the resulting JSON, it should be just relative filename
             File.WriteAllText(jsonPath, JsonConvert.SerializeObject(tagDir, Opt.Uglify ? Formatting.None : Formatting.Indented));
 
             Console.WriteLine("Successfully backed up {0} {1} with tags", i, i > 1 ? "files" : "file");
@@ -184,10 +187,9 @@ namespace TagBackup {
         /// </summary>
         /// <returns>Exit code</returns>
         static int RestoreDirectoryTags() {
-            var          i            = 0;
-            int          reqsExitCode = CheckRequirements(Opt.DirectoryPath);
-            var          tags         = new HashSet<string>();
-            string       jsonPath     = Opt.DirectoryPath + "/" + Opt.JsonFilename;
+            var    i            = 0;
+            int    reqsExitCode = CheckRequirements(Opt.DirectoryPath);
+            string jsonPath     = Opt.DirectoryPath + "/" + Opt.JsonFilename;
 
             if (reqsExitCode != 0)
                 return reqsExitCode;
@@ -201,11 +203,8 @@ namespace TagBackup {
             // everything is fine
             Console.WriteLine("Restoring tags in the directory '{0}' from JSON backup '{1}'", Opt.DirectoryPath, jsonPath);
 
-            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
-                // ignore the existing JSON backup file
-                if (filename == jsonPath)
-                    continue;
-
+            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)
+                                                 .Where(filename => filename != jsonPath)) {
                 // TODO: Optimize
                 foreach (TagFile file in tagDir.Files) {
                     if (file.Filename != filename)

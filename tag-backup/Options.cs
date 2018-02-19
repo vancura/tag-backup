@@ -17,7 +17,6 @@ namespace TagBackup {
         [CommandLineOption(Name = "h", Aliases = "help", Description = "Shows this help text", GroupId = "commands")]
         public bool Help { get; set; }
 
-
         [CommandLineOption(Name = "b", Aliases = "backup", Description = "Backup tags to a JSON file", GroupId = "commands")]
         public bool Backup { get; set; }
 
@@ -55,10 +54,8 @@ namespace TagBackup {
         [CommandLineOption(Name = "u", Aliases = "uglify", Description = "Uglify the backup JSON", GroupId = "options")]
         public bool Uglify { get; set; }
 
-
         [CommandLineOption(Name = "n", Aliases = "nocol", Description = "Trim the color code from tags", GroupId = "options")]
         public bool NoColor { get; set; }
-
 
         [CommandLineOption(Name = "v", Aliases = "verbose", Description = "Produce verbose output", GroupId = "options")]
         public bool Verbose { get; set; }
