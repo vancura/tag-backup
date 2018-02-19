@@ -53,6 +53,9 @@ namespace TagBackup {
             if (Opt.Backup)
                 return BackupDirectoryTags();
 
+            if (Opt.Trim)
+                return TrimDirectoryTags();
+
             return ErrInvalidCommand;
         }
 
@@ -90,6 +93,41 @@ namespace TagBackup {
             }
 
             return tags;
+        }
+
+
+        /// <summary>
+        /// Set the file tags.
+        /// </summary>
+        /// <param name="filename">Filename to set tags to</param>
+        /// <param name="tags">File tags</param>
+        static void SetFileTags(string filename, HashSet<string> tags) {
+            var rootNode = new ArrayNode();
+            var i        = 0;
+
+            foreach (string tag in tags) {
+                var node = new StringNode {
+                    Value = tag
+                };
+
+                rootNode.Insert(i++, node);
+            }
+
+            using (var stream = new MemoryStream()) {
+                PList.Save(rootNode, stream, PListFormat.Binary);
+                Syscall.setxattr(filename, TagName, stream.ToArray());
+            }
+        }
+
+
+        /// <summary>
+        /// Trim the file tags.
+        /// </summary>
+        /// <param name="filename">Filename to remove tags from</param>
+        static void TrimFileTags(string filename) {
+            Syscall.removexattr(filename, TagName);
+
+            // TODO: Doesn't remove colors from tags, only tags. Colors remain
         }
 
 

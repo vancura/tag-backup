@@ -22,6 +22,9 @@ namespace TagBackup {
         public bool Backup { get; set; }
 
 
+        [CommandLineOption(Name = "t", Aliases = "trim", Description = "Trim tags from files", GroupId = "commands")]
+        public bool Trim { get; set; }
+
 
         // ===========
         // = OPTIONS =
