@@ -4,7 +4,6 @@ using PListNet;
 using PListNet.Nodes;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 using Mono.Unix.Native;
 using Plossum.CommandLine;
 
@@ -21,16 +20,21 @@ namespace TagBackup {
         const int ErrInvalidCommand           = 65;
         const int ErrPathDirectoryDoesntExist = 66;
 
+        public static Options Opt = new Options();
 
 
         public static int Main() {
             int exitCode = ErrInvalidCommand;
-            var opt      = new Options();
-            var parser   = new CommandLineParser(opt);
+            var parser   = new CommandLineParser(Opt);
 
             parser.Parse();
 
-            if (opt.Help) {
+            /*
+            Console.WriteLine(parser.UsageInfo.ToString(78, false));
+            return 0;
+            */
+
+            if (Opt.Help) {
                 Console.WriteLine(parser.UsageInfo.ToString(78, false));
 
                 return 0;
@@ -42,11 +46,10 @@ namespace TagBackup {
                 return ErrParserHasErrors;
             }
 
-            string jsonPath = opt.DirectoryPath + "/" + opt.JsonFilename;
+            string jsonPath = Opt.DirectoryPath + "/" + Opt.JsonFilename;
 
-            if (opt.Backup)
-                exitCode = BackupDirectoryTags(directoryPath: opt.DirectoryPath, jsonPath: jsonPath, uglify: opt.Uglify, verbose: opt.Verbose);
-
+            if (Opt.Backup)
+                exitCode = BackupDirectoryTags(jsonPath: jsonPath);
 
             return exitCode;
         }
@@ -73,19 +76,19 @@ namespace TagBackup {
         }
 
 
-        static int BackupDirectoryTags(string directoryPath, string jsonPath, bool uglify, bool verbose) {
+        static int BackupDirectoryTags(string jsonPath) {
             var exitCode     = 0;
             var tagDir       = new TagDirectory();
             var i            = 0;
-            int reqsExitCode = CheckRequirements(directoryPath);
+            int reqsExitCode = CheckRequirements(Opt.DirectoryPath);
 
             if (reqsExitCode != 0)
                 return reqsExitCode;
 
             // everything is fine
-            Console.WriteLine("Backing up the directory '{0}' to JSON backup '{1}'", directoryPath, jsonPath);
+            Console.WriteLine("Backing up the directory '{0}' to JSON backup '{1}'", Opt.DirectoryPath, jsonPath);
 
-            foreach (string filename in Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
+            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
                 HashSet<string> tags = GetFileTags(filename);
 
                 if (tags.Count <= 0)
@@ -94,12 +97,9 @@ namespace TagBackup {
                 tagDir.AddFileTags(filename, tags);
 
                 i++;
-
-                if (verbose)
-                    Console.WriteLine("{0}: '{1}' - {2}", i, filename, JsonConvert.SerializeObject(tags));
             }
 
-            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(tagDir, uglify ? Formatting.None : Formatting.Indented));
+            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(tagDir, Opt.Uglify ? Formatting.None : Formatting.Indented));
 
             Console.WriteLine("Successfully backed up {0} {1} with tags", i, i > 1 ? "files" : "file");
 
