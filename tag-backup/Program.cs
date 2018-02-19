@@ -3,8 +3,6 @@ using System.IO;
 using PListNet;
 using PListNet.Nodes;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Mono.Unix.Native;
@@ -23,7 +21,6 @@ namespace TagBackup {
         const int ErrInvalidCommand           = 65;
         const int ErrPathDirectoryDoesntExist = 66;
 
-        static readonly Regex FilterRegex = new Regex(@"(?m)\s*(?<=\n\d)(\n\d){1,}", RegexOptions.Compiled);
 
 
         public static int Main() {
@@ -50,8 +47,6 @@ namespace TagBackup {
             if (opt.Backup)
                 exitCode = BackupDirectoryTags(directoryPath: opt.DirectoryPath, jsonPath: jsonPath, uglify: opt.Uglify, verbose: opt.Verbose);
 
-            if (opt.Cleanup)
-                exitCode = CleanupDirectoryTags(directoryPath: opt.DirectoryPath, verbose: opt.Verbose);
 
             return exitCode;
         }
@@ -109,74 +104,6 @@ namespace TagBackup {
             Console.WriteLine("Successfully backed up {0} {1} with tags", i, i > 1 ? "files" : "file");
 
             return exitCode;
-        }
-
-
-        static int CleanupDirectoryTags(string directoryPath, bool verbose) {
-            var  exitCode     = 0;
-            uint i            = 0;
-            int  reqsExitCode = CheckRequirements(directoryPath);
-
-            if (reqsExitCode != 0)
-                return reqsExitCode;
-
-            // everything is fine
-            Console.WriteLine("Cleaning up the directory '{0}'", directoryPath);
-
-            foreach (string filename in Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
-                HashSet<string> tags     = GetFileTags(filename);
-                var             rootNode = new ArrayNode();
-                var             j        = 0;
-
-                if (tags.Count <= 0)
-                    continue;
-
-                HashSet<string> sortedTags = CleanupTags(tags);
-
-                string o = JsonConvert.SerializeObject(tags);
-                string p = JsonConvert.SerializeObject(sortedTags);
-
-                if (o == p)
-                    continue;
-
-                i++;
-
-                foreach (string t in sortedTags) {
-                    var node = new StringNode {
-                        Value = t
-                    };
-
-                    rootNode.Insert(j++, node);
-                }
-
-                using (var stream = new MemoryStream()) {
-                    PList.Save(rootNode, stream, PListFormat.Binary);
-                    Syscall.setxattr(filename, TagName, stream.ToArray());
-                }
-
-                if (verbose)
-                    Console.WriteLine("{0}: '{1}' - {2} → {3}", i, filename, o, p);
-            }
-
-            Console.WriteLine("Successfully cleaned up {0} {1} with tags", i, i > 1 ? "files" : "file");
-
-            return exitCode;
-        }
-
-
-        /// <summary>
-        /// Cleans the tags up.
-        /// </summary>
-        /// <returns>Old tags</returns>
-        /// <param name="tags">New tags</param>
-        static HashSet<string> CleanupTags(IEnumerable<string> tags) {
-            var o = new HashSet<string>();
-
-            foreach (string result in tags.Select(tag => FilterRegex.Replace(tag, ""))) {
-                o.Add(result);
-            }
-
-            return o;
         }
 
 

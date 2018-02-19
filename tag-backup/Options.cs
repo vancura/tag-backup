@@ -22,9 +22,6 @@ namespace TagBackup {
         public bool Backup { get; set; }
 
 
-        [CommandLineOption(Name = "c", Aliases = "cleanup", Description = "Cleanup tags", GroupId = "commands")]
-        public bool Cleanup { get; set; }
-
 
         // ===========
         // = OPTIONS =
