@@ -21,6 +21,8 @@ namespace TagBackup {
         [CommandLineOption(Name = "b", Aliases = "backup", Description = "Backup tags to a JSON file", GroupId = "commands")]
         public bool Backup { get; set; }
 
+        [CommandLineOption(Name = "r", Aliases = "restore", Description = "Restore tags from a JSON file", GroupId = "commands")]
+        public bool Restore { get; set; }
 
         [CommandLineOption(Name = "t", Aliases = "trim", Description = "Trim tags from files", GroupId = "commands")]
         public bool Trim { get; set; }

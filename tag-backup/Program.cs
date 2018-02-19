@@ -53,6 +53,9 @@ namespace TagBackup {
             if (Opt.Backup)
                 return BackupDirectoryTags();
 
+            if (Opt.Restore)
+                return RestoreDirectoryTags();
+
             if (Opt.Trim)
                 return TrimDirectoryTags();
 
@@ -171,6 +174,81 @@ namespace TagBackup {
             File.WriteAllText(jsonPath, JsonConvert.SerializeObject(tagDir, Opt.Uglify ? Formatting.None : Formatting.Indented));
 
             Console.WriteLine("Successfully backed up {0} {1} with tags", i, i > 1 ? "files" : "file");
+
+            return 0;
+        }
+
+
+        /// <summary>
+        /// Restore tags to all files in the given directory.
+        /// </summary>
+        /// <returns>Exit code</returns>
+        static int RestoreDirectoryTags() {
+            var          i            = 0;
+            int          reqsExitCode = CheckRequirements(Opt.DirectoryPath);
+            var          tags         = new HashSet<string>();
+            string       jsonPath     = Opt.DirectoryPath + "/" + Opt.JsonFilename;
+
+            if (reqsExitCode != 0)
+                return reqsExitCode;
+
+            // deserialize backup JSON
+            // File.ReadAllText(jsonPath, JsonConvert.DeserializeObject(tagDir));
+            var tagDir = JsonConvert.DeserializeObject<TagDirectory>(File.ReadAllText(jsonPath));
+
+            // TODO: Error handling
+
+            // everything is fine
+            Console.WriteLine("Restoring tags in the directory '{0}' from JSON backup '{1}'", Opt.DirectoryPath, jsonPath);
+
+            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
+                // ignore the existing JSON backup file
+                if (filename == jsonPath)
+                    continue;
+
+                // TODO: Optimize
+                foreach (TagFile file in tagDir.Files) {
+                    if (file.Filename != filename)
+                        continue;
+
+                    SetFileTags(filename, file.Tags);
+
+                    if (Opt.Verbose)
+                        Console.WriteLine("\"{0}\" - {1}", filename, JsonConvert.SerializeObject(file.Tags));
+                }
+
+                i++;
+            }
+
+            Console.WriteLine("Successfully restored tags to {0} {1}", i, i > 1 ? "files" : "file");
+
+            return 0;
+        }
+
+
+        /// <summary>
+        /// Trim tags from all files in the given directory.
+        /// </summary>
+        /// <returns>Exit code</returns>
+        static int TrimDirectoryTags() {
+            var i            = 0;
+            int reqsExitCode = CheckRequirements(Opt.DirectoryPath);
+
+            if (reqsExitCode != 0)
+                return reqsExitCode;
+
+            // everything is fine
+            Console.WriteLine("Trimming up tags in the directory '{0}'", Opt.DirectoryPath);
+
+            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
+                TrimFileTags(filename);
+                i++;
+
+                if (Opt.Verbose)
+                    Console.WriteLine("\"{0}\"", filename);
+            }
+
+            Console.WriteLine("Successfully trimmed tags from {0} {1}", i, i > 1 ? "files" : "file");
 
             return 0;
         }
