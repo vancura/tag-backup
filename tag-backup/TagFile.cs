@@ -5,25 +5,13 @@ namespace TagBackup {
 
 
     /// <summary>
-    /// Tags for a file.
+    ///     Tags for a file.
     /// </summary>
     sealed class TagFile {
 
 
         /// <summary>
-        /// Filename.
-        /// </summary>
-        public string Filename { get; }
-
-
-        /// <summary>
-        /// Tags.
-        /// </summary>
-        public HashSet<string> Tags { get; }
-
-
-        /// <summary>
-        /// Constructor.
+        ///     Constructor.
         /// </summary>
         /// <param name="filename">Filename</param>
         /// <param name="tags">Tags</param>
@@ -31,6 +19,18 @@ namespace TagBackup {
             Filename = filename;
             Tags     = tags;
         }
+
+
+        /// <summary>
+        ///     Filename.
+        /// </summary>
+        public string Filename { get; }
+
+
+        /// <summary>
+        ///     Tags.
+        /// </summary>
+        public HashSet<string> Tags { get; }
 
 
     }

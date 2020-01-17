@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 
 
 namespace TagBackup {
 
 
     /// <summary>
-    /// Tags for a directory.
+    ///     Tags for a directory.
     /// </summary>
     sealed class TagDirectory {
 
@@ -19,7 +17,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Add a file with specified tags.
+        ///     Add a file with specified tags.
         /// </summary>
         /// <param name="filename">Filename</param>
         /// <param name="tags">Tags</param>

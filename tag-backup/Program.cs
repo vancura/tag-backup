@@ -1,11 +1,11 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Mono.Unix.Native;
+using Newtonsoft.Json;
 using PListNet;
 using PListNet.Nodes;
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Mono.Unix.Native;
 using Plossum.CommandLine;
 
 
@@ -25,7 +25,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Main.
+        ///     Main.
         /// </summary>
         /// <returns>Exit code</returns>
         public static int Main() {
@@ -65,7 +65,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Get the file tags.
+        ///     Get the file tags.
         /// </summary>
         /// <param name="filename">Filename to extract tags from</param>
         /// <returns>Tags</returns>
@@ -76,7 +76,7 @@ namespace TagBackup {
 
             if (tagData == null) {
                 // empty tags
-                Console.WriteLine("Warning: \"{0}\" has no tags", filename);
+                // Console.WriteLine("Warning: \"{0}\" has no tags", filename);
 
                 return tags;
             }
@@ -101,7 +101,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Set the file tags.
+        ///     Set the file tags.
         /// </summary>
         /// <param name="filename">Filename to set tags to</param>
         /// <param name="tags">File tags</param>
@@ -125,7 +125,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Trim the file tags.
+        ///     Trim the file tags.
         /// </summary>
         /// <param name="filename">Filename to remove tags from</param>
         static void TrimFileTags(string filename) {
@@ -136,7 +136,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Backup tags of all files in the given directory.
+        ///     Backup tags of all files in the given directory.
         /// </summary>
         /// <returns>Exit code</returns>
         static int BackupDirectoryTags() {
@@ -185,7 +185,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Restore tags to all files in the given directory.
+        ///     Restore tags to all files in the given directory.
         /// </summary>
         /// <returns>Exit code</returns>
         static int RestoreDirectoryTags() {
@@ -230,7 +230,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Trim tags from all files in the given directory.
+        ///     Trim tags from all files in the given directory.
         /// </summary>
         /// <returns>Exit code</returns>
         static int TrimDirectoryTags() {
@@ -260,7 +260,7 @@ namespace TagBackup {
 
 
         /// <summary>
-        /// Check all the requirements to process the directory.
+        ///     Check all the requirements to process the directory.
         /// </summary>
         /// <param name="path">Directory path</param>
         /// <returns>Error code or 0 if OK</returns>
