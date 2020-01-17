@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using PListNet;
 using PListNet.Nodes;
@@ -151,7 +151,8 @@ namespace TagBackup {
             // everything is fine
             Console.WriteLine("Backing up the directory '{0}' to JSON backup '{1}'", Opt.DirectoryPath, jsonPath);
 
-            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
+            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.AllDirectories)
+            ) {
                 // ignore the potentially existing JSON backup file
                 if (filename == jsonPath)
                     continue;
@@ -174,7 +175,8 @@ namespace TagBackup {
 
             // serialize backup JSON
             // TODO: Stores full path in the resulting JSON, it should be just relative filename
-            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(tagDir, Opt.Uglify ? Formatting.None : Formatting.Indented));
+            File.WriteAllText(jsonPath,
+                              JsonConvert.SerializeObject(tagDir, Opt.Uglify ? Formatting.None : Formatting.Indented));
 
             Console.WriteLine("Successfully backed up {0} {1} with tags", i, i > 1 ? "files" : "file");
 
@@ -201,9 +203,11 @@ namespace TagBackup {
             // TODO: Error handling
 
             // everything is fine
-            Console.WriteLine("Restoring tags in the directory '{0}' from JSON backup '{1}'", Opt.DirectoryPath, jsonPath);
+            Console.WriteLine("Restoring tags in the directory '{0}' from JSON backup '{1}'",
+                              Opt.DirectoryPath,
+                              jsonPath);
 
-            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)
+            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.AllDirectories)
                                                  .Where(filename => filename != jsonPath)) {
                 // TODO: Optimize
                 foreach (TagFile file in tagDir.Files) {
@@ -239,7 +243,9 @@ namespace TagBackup {
             // everything is fine
             Console.WriteLine("Trimming up tags in the directory '{0}'", Opt.DirectoryPath);
 
-            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath, "*.*", SearchOption.TopDirectoryOnly)) {
+            foreach (string filename in Directory.EnumerateFiles(Opt.DirectoryPath,
+                                                                 "*.*",
+                                                                 SearchOption.TopDirectoryOnly)) {
                 TrimFileTags(filename);
                 i++;
 
